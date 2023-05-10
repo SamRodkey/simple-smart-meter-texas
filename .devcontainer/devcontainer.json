@@ -1,0 +1,22 @@
+{
+    "name": "Python 3",
+    "image": "python:latest",
+    "runArgs": [
+        "--env-file",
+        ".devcontainer/devcontainer.env"
+    ],
+    "postCreateCommand": "pip3 install poetry && poetry install --with dev,test,docs",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "njpwerner.autodocstring"
+            ],
+            "settings": {
+                "autoDocstring.docstringFormat": "numpy",
+                "python.formatting.provider": "black"
+            }
+        }
+    }
+}
