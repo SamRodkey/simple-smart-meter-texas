@@ -9,8 +9,8 @@ packages = [{include = "simple_smart_meter_texas"}]
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.30.0"
-pyyaml = "^6.0"
 pytz = "^2023.3"
+pandas = "^2.0.1"
 
 
 [tool.poetry.group.lint.dependencies]
@@ -19,6 +19,9 @@ black = "^23.3.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.1"
+pytest-cov = "^4.1.0"
+requests-mock = "^1.11.0"
+pandas = "^2.0.2"
 
 
 [tool.poetry.group.docs.dependencies]
@@ -28,6 +31,7 @@ mkdocs-material = "^9.1.11"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
+urllib3 = "^1"
 
 [build-system]
 requires = ["poetry-core"]

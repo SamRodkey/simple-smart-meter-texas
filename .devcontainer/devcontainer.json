@@ -5,17 +5,19 @@
         "--env-file",
         ".devcontainer/devcontainer.env"
     ],
-    "postCreateCommand": "pip3 install poetry && poetry install --with dev,test,docs",
+    "postCreateCommand": "pip3 install poetry && poetry config virtualenvs.create false && poetry install --with dev,test,docs",
     "customizations": {
         "vscode": {
             "extensions": [
                 "ms-python.python",
                 "ms-python.vscode-pylance",
+                "ms-python.black-formatter",
                 "njpwerner.autodocstring"
             ],
             "settings": {
                 "autoDocstring.docstringFormat": "numpy",
-                "python.formatting.provider": "black"
+                "editor.defaultFormatter": "ms-python.black-formatter",
+                "editor.formatOnSave": true
             }
         }
     }
