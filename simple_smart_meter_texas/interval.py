@@ -88,6 +88,10 @@ def _request_interval_data_over_date_range(
             f"POST Request to {INTERVAL_URL:s} returned status code {resp.status_code:d} : {resp.json() if resp.json() else ''}"
         )
 
+    logger.info(
+        f"Recieved response containing interval data for dates between {start_date} and {end_date} for ESID {esid:s}."
+    )
+
     return resp.json()
 
 
@@ -262,9 +266,17 @@ def get_interval_data_over_date_range(
             )
         )
 
+        logger.info(
+            f"Completed retrieval of daily data between {sub_start_date.isoformat():s} and {sub_end_date.isoformat():s} ."
+        )
+
         if sub_end_date != end_date:
-            logger.debug(f"Sleeping for {SLEEP_TIME_PER_REQUEST} seconds...")
+            logger.info(f"Sleeping for {SLEEP_TIME_PER_REQUEST} seconds...")
             sleep(SLEEP_TIME_PER_REQUEST)
+
+    logger.info(
+        f"Completed retrieval of all daily data between {start_date.isoformat():s} and {end_date.isoformat():s} ."
+    )
 
     return daily_data_dicts
 
