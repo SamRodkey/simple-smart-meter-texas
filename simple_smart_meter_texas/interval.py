@@ -40,17 +40,46 @@ def _request_interval_data_over_date_range(
     token: str,
     esid: str,
 ) -> dict:
-    # TODO: add docstring
+    """helper method executes the request to the API directly and returns
+        the raw JSON response
+
+    Parameters
+    ----------
+    start_date : datetime.date
+        first day in date range to request data
+    end_date : datetime.date
+        last day in date range to request data
+    token : str
+        session token to use for authentication to HTTP API
+    esid : str
+        subscriber ID to request data  HTTP API
+
+    Returns
+    -------
+    dict
+        dictionary containing raw JSON returned from HTTP request
+
+    Raises
+    ------
+    ValueError
+        if date arguments are inconsistent, invalid, or are not supported
+        by the Smart Meter Texas API.
+    requests.exceptions.HTTPError
+        if an error response is returned from the Smart Meter Texas HTTP API.
+    """
+
+    # check to make sure end date is after start date
     if end_date < start_date:
         raise ValueError(
             f"Specified end_date '{end_date.isoformat()}' is before start_date!"
         )
-
+    # ensure that end date is not after today
     if end_date > date.today():
         raise ValueError(
             f"Specified end_date '{end_date.isoformat()}' cannot be after today"
         )
 
+    # ensure that date range is less than or equal to MAX_DAYS_PER_REQUEST
     if (end_date - start_date) > timedelta(days=(MAX_DAYS_PER_REQUEST - 1)):
         raise ValueError(
             f"Specified date range is longer than limit of {MAX_DAYS_PER_REQUEST:d} days of data per request to Smart Meter Texas HTTP API."
@@ -96,19 +125,19 @@ def _request_interval_data_over_date_range(
 
 
 def _parse_value_array_string(values: str) -> list[float]:
-    """_summary_
+    """helper method to parse the string of interval values returned from
+        Smart Meter Texas API calls
 
     Parameters
     ----------
     values : str
-        _description_
+        string containing comma separated values for each 15 minute period
 
     Returns
     -------
     list[float]
-        _description_
+        list of values contained in input string
     """
-    # TODO: add docstring
     return [
         float(re.search(r"^[\+-]?[\d\.]+", v).group(0))
         if re.search(r"^[\+-]?[\d\.]+", v)
@@ -119,7 +148,26 @@ def _parse_value_array_string(values: str) -> list[float]:
 
 
 def _parse_response_for_daily_record_dicts(resp: dict) -> list[dict]:
-    # TODO: add docstring
+    """helper method to parse the response returned from the interval data request
+        and turn it into a list dictionaries containing the data key/values from
+        each day
+
+    Parameters
+    ----------
+    resp : dict
+        raw JSON response from interval data request
+
+    Returns
+    -------
+    list[dict]
+        list of daily data dictionaries
+
+    Raises
+    ------
+    KeyError
+        if response from Smart Meter Texas API is mal-formed or missing fields
+    """
+
     # create empty ordered dictionary to store each daily record dictionary by date
     daily_records_by_date = OrderedDict()
 
@@ -204,7 +252,29 @@ def _iterate_over_interval_date_subranges(
     start_date: date,
     end_date: date,
 ) -> tuple[date, date]:
-    # TODO: add docstring
+    """helper method which generates iterates over a larger range of dates by using
+        smaller date sub-intervals, returns pairs of start/end dates for each sub interval
+        as a tuple
+
+    Parameters
+    ----------
+    start_date : datetime.date
+        overall start date for entire date range
+    end_date : datetime.date
+        overall end date for entire date range
+
+    Returns
+    -------
+    tuple[date, date]
+        tuple of start and end date for each sub interval of dates in the
+        overall date interval
+
+    Yields
+    ------
+    Iterator[tuple[date, date]]
+        pairs of start and end dates for each date sub-interval
+    """
+
     # get date range start as ordinal integer
     range_start_ordint = start_date.toordinal()
 
@@ -229,11 +299,13 @@ def _iterate_over_interval_date_subranges(
             f"Current interval data date subrange : {current_subrange_start_date.isoformat()} - {current_subrange_end_date.isoformat()}"
         )
 
+        # return current date subrange
         yield (
             current_subrange_start_date,
             current_subrange_end_date,
         )
 
+        # calculate values for next iteration
         current_subrange_start = current_subrange_stop
 
         current_subrange_stop = min(
@@ -247,8 +319,30 @@ def get_interval_data_over_date_range(
     end_date: date,
     token: str,
     esid: str = os.environ.get(DEFAULT_ESID_ENV_VARIABLE, None),
-):
-    # TODO: add docstring
+) -> list[dict]:
+    f"""returns 15-minute interval energy usage data using the Smart Meter Texas HTTP API
+        for a specified ESID. The data will be returned as a list of daily data dictionaries
+        for each day between the input `start_date` and `end_date`.
+
+    Parameters
+    ----------
+    start_date : datetime.date
+        first date to request interval data
+    end_date : date
+        last date to request interval data
+    token : str
+        session token to use for authentication to Smart Meter Texas HTTP API
+    esid : str, optional
+        subscriber ID to request data via Smart Meter Texas HTTP API, if not specified will use
+        the value of the environment variable {os.get(DEFAULT_ESID_ENV_VARIABLE):s}.
+
+    Returns
+    -------
+    list[dict]
+        list of daily data dictionaries dates between the specified start and end date
+        with arrays 15-minute energy data for the specified ESID
+    """
+
     daily_data_dicts = []
 
     for sub_start_date, sub_end_date in _iterate_over_interval_date_subranges(
@@ -287,7 +381,34 @@ def get_interval_dataframe_over_date_range(
     token: str,
     esid: str = os.environ.get(DEFAULT_ESID_ENV_VARIABLE, None),
 ):
-    # TODO: add docstring
+    f"""returns 15-minute interval energy usage data using the Smart Meter Texas HTTP API
+        for a specified ESID. The data will be returned as a pandas DataFrame
+        with alla available data between the input `start_date` and `end_date`.
+
+    Parameters
+    ----------
+    start_date : datetime.date
+        first date to request interval data
+    end_date : date
+        last date to request interval data
+    token : str
+        session token to use for authentication to Smart Meter Texas HTTP API
+    esid : str, optional
+        subscriber ID to request data via Smart Meter Texas HTTP API, if not specified will use
+        the value of the environment variable {os.get(DEFAULT_ESID_ENV_VARIABLE):s}.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame containing all 15-minute energy data for the specified
+        ESID over the range of dates between the specified start and end date
+
+    Raises
+    ------
+    ImportError
+        _description_
+    """
+
     try:
         import pandas as pd
     except ImportError:

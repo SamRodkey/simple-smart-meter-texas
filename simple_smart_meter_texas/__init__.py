@@ -6,7 +6,13 @@ logger.setLevel(logging.DEBUG)
 
 
 def _check_for_pandas() -> bool:
-    # TODO: add docstring to _check_for_pandas
+    """helper method use to check for the presence of optional pandas dependencies
+
+    Returns
+    -------
+    bool
+        True if pandas is installed in currently active Python environment
+    """
     try:
         import pandas as pd
 

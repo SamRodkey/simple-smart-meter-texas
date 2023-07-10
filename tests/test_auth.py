@@ -12,12 +12,18 @@ from simple_smart_meter_texas.auth import (
 
 @pytest.fixture
 def example_auth_response():
-    # TODO: add docstring
-    return {"token": "1234.abcdEFGH"}
+    """example auth response for use in unit-testing
+
+    Returns
+    -------
+    dict
+        simulated auth response with session token
+    """
+    return {"token": "1234.abcdefg"}
 
 
 def test_request_authentication(example_auth_response):
-    # TODO: add docstring
+    """tests authentication request request error handling using mock"""
 
     # test nominal request
     with requests_mock.Mocker() as m:
@@ -62,7 +68,7 @@ def test_request_authentication(example_auth_response):
 
 
 def test_get_session_token(example_auth_response):
-    # TODO: add docstring
+    """tests authentication request input error handling using mock"""
 
     # test nominal behavior
     with requests_mock.Mocker() as m:

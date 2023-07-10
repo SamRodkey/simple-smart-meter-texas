@@ -5,11 +5,12 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python",
-                "ms-python.vscode-pylance",
-                "ms-python.black-formatter",
-                "njpwerner.autodocstring"
-            ],
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.black-formatter",
+				"njpwerner.autodocstring",
+				"Gruntfuggly.todo-tree"
+			],
             "settings": {
                 "autoDocstring.docstringFormat": "numpy",
                 "editor.defaultFormatter": "ms-python.black-formatter",

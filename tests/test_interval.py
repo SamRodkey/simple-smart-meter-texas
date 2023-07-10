@@ -20,9 +20,14 @@ from simple_smart_meter_texas.interval import (
 
 @pytest.fixture
 def example_interval_response():
-    # Copied from Page 23 in API Documentation here:
-    # https://www.smartmetertexas.com/Smart_Meter_Texas_Interface_Guide.pdf
-    # TODO: add docstring
+    """simulated Smart Meter Texas API response
+
+    Returns
+    -------
+    dict
+        example response taken from Page 23 in Smart Meter API Documentation (https://www.smartmetertexas.com/Smart_Meter_Texas_Interface_Guide.pdf)
+    """
+
     return {
         "data": {
             "trans_id": "123",
@@ -52,7 +57,19 @@ def example_interval_response():
 
 
 def valiate_example_interval_response(results):
-    # TODO: add docstring
+    """test helper method to validate the properties and structure of the response
+        containing 15-minute interval energy consumption data
+
+    Parameters
+    ----------
+    results : dict
+
+    Raises
+    ------
+        AssertionError
+            if any test fails
+    """
+
     # assert we got a list of entries for each day
     assert isinstance(results, list)
 
@@ -114,7 +131,8 @@ def valiate_example_interval_response(results):
 
 
 def test_date_iteration():
-    # TODO: add docstring
+    """unit test to verify _iterate_over_interval_date_subranges"""
+
     # single day subrange
     assert list(
         _iterate_over_interval_date_subranges(
@@ -191,7 +209,7 @@ def test_date_iteration():
 
 
 def test_parsing(example_interval_response):
-    # TODO: add docstring
+    """unit test to verify _parse_response_for_daily_record_dicts"""
     # parse our example response dictionary
     results = _parse_response_for_daily_record_dicts(example_interval_response)
 
@@ -205,7 +223,8 @@ def test_parsing(example_interval_response):
 
 
 def test_request_interval_data_over_date_range(example_interval_response):
-    # TODO: add docstring
+    """unit test to verify _request_interval_data_over_date_range"""
+
     with requests_mock.Mocker() as m:
         m.post(INTERVAL_URL, json=example_interval_response)
 
@@ -258,7 +277,7 @@ def test_request_interval_data_over_date_range(example_interval_response):
 
 
 def test_get_interval_data_over_date_range(example_interval_response):
-    # TODO: add docstring
+    """end-to-end test to verify get_interval_data_over_date_range"""
     with requests_mock.Mocker() as m:
         # define response to post request to interval url
         m.post(INTERVAL_URL, json=example_interval_response)
@@ -274,7 +293,7 @@ def test_get_interval_data_over_date_range(example_interval_response):
 
 
 def test_get_interval_dataframe_over_date_range(example_interval_response):
-    # TODO: add docstring
+    """end-to-end test to verify get_interval_dataframe_over_date_range"""
     assert _check_for_pandas()
 
     import pandas as pd
