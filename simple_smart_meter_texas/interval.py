@@ -334,7 +334,7 @@ def get_interval_data_over_date_range(
         session token to use for authentication to Smart Meter Texas HTTP API
     esid : str, optional
         subscriber ID to request data via Smart Meter Texas HTTP API, if not specified will use
-        the value of the environment variable {os.get(DEFAULT_ESID_ENV_VARIABLE):s}.
+        the value of the environment variable {os.environ.get(DEFAULT_ESID_ENV_VARIABLE):s}.
 
     Returns
     -------
@@ -395,7 +395,7 @@ def get_interval_dataframe_over_date_range(
         session token to use for authentication to Smart Meter Texas HTTP API
     esid : str, optional
         subscriber ID to request data via Smart Meter Texas HTTP API, if not specified will use
-        the value of the environment variable {os.get(DEFAULT_ESID_ENV_VARIABLE):s}.
+        the value of the environment variable {os.environ.get(DEFAULT_ESID_ENV_VARIABLE):s}.
 
     Returns
     -------
